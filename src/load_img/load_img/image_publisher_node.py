@@ -9,9 +9,9 @@ import os
 from load_img.lib import get_path
 
 #---TODO-------------------------------------
-IMAGE_DIRECTORY_PATH = get_path("Collected_Datasets")
+IMAGE_DIRECTORY_PATH = get_path("Collected_Datasets/sample_dataset")
 SHOW_IMAGE = True
-TIMER = 0.1
+TIMER = 5.0 # 소수점 찍어 줘야 함 (int형 변수는 반영이 안되고, double형 변수만 반영 됨) 
 QUE = 1
 #--------------------------------------------
 
@@ -38,7 +38,7 @@ class ImagePublisherNode(Node):
         self.timer = self.create_timer(self.timer_period, self.timer_callback)
         
         self.path = get_path(self.img_path)
-        self.img_list = sorted(os.listdir(self.path), key=lambda x: int(x.split('_')[0]))
+        self.img_list = sorted(os.listdir(self.path))
         self.img_num = 0
         
     def timer_callback(self):         
