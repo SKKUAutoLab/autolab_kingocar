@@ -10,14 +10,17 @@ import cv2
 
 from .lib import filter_image as FILTER
 
-#---TODO-------------------------------------
-#SUB_TOPIC_NAME = "topic_raw_img"
+#---------------Variable Setting---------------
+# Subscribe할 토픽 이름
 SUB_TOPIC_NAME = "topic_masking_img"
+
+# Publish할 토픽 이름
 PUB_TOPIC_NAME = "topic_postproc_img"
 
-TIMER = 0.1
+# Subscriber & Publisher 큐 크기
 QUE = 1
-#--------------------------------------------
+
+#----------------------------------------------
 
 class PostProcess():
   def __init__(self):

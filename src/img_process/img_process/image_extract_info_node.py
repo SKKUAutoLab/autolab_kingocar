@@ -11,18 +11,22 @@ from interfaces_pkg.msg import LaneInfo
 
 from .lib import extract_road_info as RF
 
-#---TODO-------------------------------------
+#---------------Variable Setting---------------
+# Subscribe할 토픽 이름
 SUB_TOPIC_NAME = "topic_postproc_img"
+
+# Publish할 토픽 이름
 PUB_TOPIC_NAME = "topic_lane_info"
 
-# PPT 자료 참고
+# Subscriber & Publisher 큐 크기
+QUE = 1
+
+# 기타 Hyperparameter
 lane_horizontal_thesh_degree = 18
 lane_width_pixel = 300
 target_point_detection_height = 90
 
-TIMER = 0.1
-QUE = 1
-#--------------------------------------------
+#----------------------------------------------
 
 class ExtractInfo():
   def __init__(self):

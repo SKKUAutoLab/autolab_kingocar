@@ -4,12 +4,23 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge 
 import cv2
 
-#---TODO-------------------------------------
-CAM_NUM = 0 
+#---------------Variable Setting---------------
+# Publish할 토픽 이름
+PUB_TOPIC_NAME = 'topic_raw_img'
+
+# 카메라(웹캠) 장치 번호
+CAM_NUM = 0
+
+# 이미지를 화면에 표시할지 여부
 SHOW_IMAGE = True
-TIMER = 0.03 # 소수점 찍어 줘야 함 (int형 변수는 반영이 안되고, double형 변수만 반영 됨) 
+
+# 이미지 발행 주기 (초) - 소수점 필요 (int형은 반영되지 않음)
+TIMER = 0.1
+
+# Publisher 큐 크기
 QUE = 1
-#--------------------------------------------
+
+#----------------------------------------------
 
 class CameraPublisherNode(Node):
     def __init__(self, cam_num=CAM_NUM, pub_topic='topic_raw_img', logger=SHOW_IMAGE, timer=TIMER, que=QUE):

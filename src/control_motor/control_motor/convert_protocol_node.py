@@ -9,13 +9,17 @@ from interfaces_pkg.msg import Motor
 
 from .lib import convert_arduino_msg as PROTOCOL
 
-#---TODO-------------------------------------
+#---------------Variable Setting---------------
+# Subscribe할 토픽 이름
 SUB_TOPIC_NAME = "topic_contol_signal"
+
+# Publish할 토픽 이름
 PUB_TOPIC_NAME = "topic_protocol_signal"
 
-TIMER = 0.1
+# Subscriber & Publisher 큐 크기
 QUE = 1
-#--------------------------------------------
+
+#----------------------------------------------
 
 class ConvertProtocol():
   def __init__(self):

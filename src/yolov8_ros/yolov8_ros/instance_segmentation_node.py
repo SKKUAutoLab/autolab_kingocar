@@ -28,33 +28,40 @@ from interfaces_pkg.msg import Mask
 from interfaces_pkg.msg import Detection
 from interfaces_pkg.msg import DetectionArray
 
-#---TODO-------------------------------------
+#---------------Variable Setting---------------
+# Subscribe할 토픽 이름
 SUB_TOPIC_NAME = 'topic_raw_img'
+
+# Publish할 토픽 이름
 PUB_TOPIC_NAME = 'topic_masking_img'
-SHOW_IMAGE = True
-TIMER = 0.1
+
+# Subscriber & Publisher 큐 크기
 QUE = 1
 
-MODEL = get_path('best.pt') # lib 안에 위치한 pt 파일명
+# pt파일의 경로
+MODEL = get_path('best.pt') 
+
+# 추론 연산을 할 하드웨어 설정 (cpu, cuda:0 중에 선택)
 DEVICE = "cpu"
 #DEVICE = "cuda:0"
-THRESHOLD = 0.5 # 0.1
-#--------------------------------------------
+
+# Confidence score가 THRESHOLD 값을 넘었을때 마스킹 이미지에 표시하도록 설정
+THRESHOLD = 0.5
+
+#----------------------------------------------
 
 WHITE = [255, 255, 255]
 PINK = [136, 0, 237]
 PURPLE = [37, 0, 136]
             
 class SegmentationNode(Node):
-    def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic=PUB_TOPIC_NAME, logger=SHOW_IMAGE, timer=TIMER, que=QUE, \
+    def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic=PUB_TOPIC_NAME, que=QUE, \
                         model=MODEL, device=DEVICE, threshold=THRESHOLD   \
         ):
         super().__init__("node_pub_segmentation")
         
         self.declare_parameter('sub_topic', sub_topic)
         self.declare_parameter('pub_topic', pub_topic)
-        self.declare_parameter('logger', logger)
-        self.declare_parameter('timer', timer)
         self.declare_parameter('que', que)
         
         self.declare_parameter("model", model)
@@ -63,8 +70,6 @@ class SegmentationNode(Node):
                 
         self.sub_topic = self.get_parameter('sub_topic').get_parameter_value().string_value
         self.pub_topic = self.get_parameter('pub_topic').get_parameter_value().string_value
-        self.logger = self.get_parameter('logger').get_parameter_value().bool_value
-        self.timer_period = self.get_parameter('timer').get_parameter_value().double_value
         self.que = self.get_parameter('que').get_parameter_value().integer_value
         
         self.model = self.get_parameter("model").get_parameter_value().string_value
