@@ -8,12 +8,20 @@ import os
 
 from load_img.lib import get_path
 
-#---TODO-------------------------------------
+#---------------Variable Setting---------------
+# Publish 할 이미지 파일의 경로
 IMAGE_DIRECTORY_PATH = get_path("Collected_Datasets/sample_dataset")
-SHOW_IMAGE = True
-TIMER = 5.0 # 소수점 찍어 줘야 함 (int형 변수는 반영이 안되고, double형 변수만 반영 됨) 
+
+# 이미지를 화면에 표시할지 여부
+SHOW_IMAGE = False
+
+# 이미지 발행 주기 (초) - 소수점 필요 (int형은 반영되지 않음)
+TIMER = 1.0 
+
+# Publisher 큐 크기
 QUE = 1
-#--------------------------------------------
+
+#----------------------------------------------
 
 class ImagePublisherNode(Node):
     def __init__(self, img_path=IMAGE_DIRECTORY_PATH, pub_topic='topic_raw_img', logger=SHOW_IMAGE, timer=TIMER, que=QUE):

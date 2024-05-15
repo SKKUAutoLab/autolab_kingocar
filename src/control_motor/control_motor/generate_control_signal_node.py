@@ -47,8 +47,11 @@ steering_command, actual_left_speed_command, actual_right_speed_command 를 도�
 
 from .lib import control_motor as CONTROL
 
-#---TODO-------------------------------------
+#---------------Variable Setting---------------
+# Subscribe할 토픽 이름
 SUB_TOPIC_NAME = "topic_lane_info"
+
+# Publish할 토픽 이름
 PUB_TOPIC_NAME = "topic_contol_signal"
 
 # 차량의 속도 (-255 ~ +255) , 음수면 후진, 양수면 전진
@@ -61,9 +64,10 @@ SPEED_CHANGE_SMOOTHNESS = 30
 car_center_point_x = 280
 car_center_point_y = 179
 
-TIMER = 0.1
+# Subscriber & Publisher 큐 크기
 QUE = 1
-#--------------------------------------------
+
+#----------------------------------------------
 
 class IntegrateInfo():
   def __init__(self):

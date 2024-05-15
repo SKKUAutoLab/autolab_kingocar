@@ -12,16 +12,20 @@ from interfaces_pkg.msg import Motor
 from .lib import control_motor as CONTROL
 from .lib import convert_arduino_msg as PROTOCOL
 
-#---TODO-------------------------------------
+#---------------Variable Setting---------------
+# Subscribe할 토픽 이름
 SUB_TOPIC_NAME = "topic_protocol_signal"
 
-TIMER = 0.1
+# Subscriber 큐 크기
 QUE = 1
 
+# 아두이노 장치 명
 PORT='/dev/ttyACM0'
 
+# 가변저항과 연결된 아날로그 입력 핀
 VARIBLE_RESISTER_INPUT_PIN = 'A2'
 
+# 각 모터드라이버에 연결된 아두이노 핀
 STEERING_PIN1 = 10
 STEERING_PIN2 = 12
 LEFT_REAR_PIN1 = 6
@@ -29,10 +33,11 @@ LEFT_REAR_PIN2 = 8
 RIGHT_REAR_PIN1 = 3
 RIGHT_REAR_PIN2 = 5
 
+# 가변저항 최대 좌측 & 최대 우측 측정 값
 resistance_most_left = 433
 resistance_most_right = 309
 
-#--------------------------------------------
+#----------------------------------------------
 
 ser = serial.Serial(PORT, 9600, timeout=1)
 time.sleep(1)

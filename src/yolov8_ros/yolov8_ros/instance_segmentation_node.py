@@ -28,33 +28,40 @@ from interfaces_pkg.msg import Mask
 from interfaces_pkg.msg import Detection
 from interfaces_pkg.msg import DetectionArray
 
-#---TODO-------------------------------------
+#---------------Variable Setting---------------
+# Subscribe할 토픽 이름
 SUB_TOPIC_NAME = 'topic_raw_img'
+
+# Publish할 토픽 이름
 PUB_TOPIC_NAME = 'topic_masking_img'
-SHOW_IMAGE = True
-TIMER = 0.1
+
+# Subscriber & Publisher 큐 크기
 QUE = 1
 
-MODEL = get_path('best.pt') # lib 안에 위치한 pt 파일명
+# pt파일의 경로
+MODEL = get_path('best.pt') 
+
+# 추론 연산을 할 하드웨어 설정 (cpu, cuda:0 중에 선택)
 DEVICE = "cpu"
 #DEVICE = "cuda:0"
-THRESHOLD = 0.5 # 0.1
-#--------------------------------------------
+
+# Confidence score가 THRESHOLD 값을 넘었을때 마스킹 이미지에 표시하도록 설정
+THRESHOLD = 0.5
+
+#----------------------------------------------
 
 WHITE = [255, 255, 255]
 PINK = [136, 0, 237]
 PURPLE = [37, 0, 136]
             
 class SegmentationNode(Node):
-    def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic=PUB_TOPIC_NAME, logger=SHOW_IMAGE, timer=TIMER, que=QUE, \
+    def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic=PUB_TOPIC_NAME, que=QUE, \
                         model=MODEL, device=DEVICE, threshold=THRESHOLD   \
         ):
         super().__init__("node_pub_segmentation")
         
         self.declare_parameter('sub_topic', sub_topic)
         self.declare_parameter('pub_topic', pub_topic)
-        self.declare_parameter('logger', logger)
-        self.declare_parameter('timer', timer)
         self.declare_parameter('que', que)
         
         self.declare_parameter("model", model)
@@ -63,8 +70,6 @@ class SegmentationNode(Node):
                 
         self.sub_topic = self.get_parameter('sub_topic').get_parameter_value().string_value
         self.pub_topic = self.get_parameter('pub_topic').get_parameter_value().string_value
-        self.logger = self.get_parameter('logger').get_parameter_value().bool_value
-        self.timer_period = self.get_parameter('timer').get_parameter_value().double_value
         self.que = self.get_parameter('que').get_parameter_value().integer_value
         
         self.model = self.get_parameter("model").get_parameter_value().string_value
@@ -85,9 +90,7 @@ class SegmentationNode(Node):
         self.pub_info = self.create_publisher(DetectionArray, "detections", self.que)
         
         self._class_to_color = {}
-        
-        self.time_prev = time.time()
-        self.time_post = time.time()
+
             
     def parse_hypothesis(self, results: Results) -> List[Dict]:
         hypothesis_list = []
@@ -154,6 +157,9 @@ class SegmentationNode(Node):
         cv_image = self.cv_bridge.imgmsg_to_cv2(msg)
         
         results = self.yolo.predict(source=cv_image, verbose=False, stream=False, conf=self.threshold, device=self.device)
+        computation_time = results[0].speed['preprocess'] + results[0].speed['inference'] + results[0].speed['postprocess']
+        print('Computation time for this frame: ', format(round(computation_time/1000, 6),'.6f'), ' sec')
+
         results: Results = results[0].cpu()
         
         if results.boxes:
@@ -205,10 +211,6 @@ class SegmentationNode(Node):
                                      
         cv2.imshow('masked_img', masking_outer)
         cv2.waitKey(1)
-
-        self.time_prev = self.time_post
-        self.time_post = time.time()
-        print('computation time for this frame: ', self.time_post - self.time_prev)
 
         
 def main(args=None):
