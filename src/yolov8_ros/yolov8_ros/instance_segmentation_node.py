@@ -28,24 +28,27 @@ from interfaces_pkg.msg import Mask
 from interfaces_pkg.msg import Detection
 from interfaces_pkg.msg import DetectionArray
 
-#---TODO-------------------------------------
+#---------------Variable Setting---------------
+# Subscribe할 토픽 이름
 SUB_TOPIC_NAME = 'topic_raw_img'
+
+# Publish할 토픽 이름
 PUB_TOPIC_NAME = 'topic_masking_img'
 
-# lib 안에 위치한 yolo모델 pt 파일명
-MODEL = get_path('best.pt') 
-
-# 엔비디아 GPU가 컴퓨터에 탑재되어 있고, 호환되는 드라이버가 설치되어 있는 경우 cuda:0 으로 선택
-DEVICE = "cpu"
-# DEVICE = "cuda:0"
-
-# yolo 모델이 추론한 instance의 confidence score(0.0 ~ 1.0)가 THRESHOLD 값을 넘을 때만 마스킹 함.
-THRESHOLD = 0.5
-
-
+# Subscriber & Publisher 큐 크기
 QUE = 1
 
-#--------------------------------------------
+# pt파일의 경로
+MODEL = get_path('best.pt') 
+
+# 추론 연산을 할 하드웨어 설정 (cpu, cuda:0 중에 선택)
+DEVICE = "cpu"
+#DEVICE = "cuda:0"
+
+# Confidence score가 THRESHOLD 값을 넘었을때 마스킹 이미지에 표시하도록 설정
+THRESHOLD = 0.5
+
+#----------------------------------------------
 
 WHITE = [255, 255, 255]
 PINK = [136, 0, 237]
