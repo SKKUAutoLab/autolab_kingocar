@@ -28,27 +28,24 @@ from interfaces_pkg.msg import Mask
 from interfaces_pkg.msg import Detection
 from interfaces_pkg.msg import DetectionArray
 
-#---------------Variable Setting---------------
-# Subscribe할 토픽 이름
+#---TODO-------------------------------------
 SUB_TOPIC_NAME = 'topic_raw_img'
-
-# Publish할 토픽 이름
 PUB_TOPIC_NAME = 'topic_masking_img'
 
-# Subscriber & Publisher 큐 크기
-QUE = 1
-
-# pt파일의 경로
+# lib 안에 위치한 yolo모델 pt 파일명
 MODEL = get_path('best.pt') 
 
-# 추론 연산을 할 하드웨어 설정 (cpu, cuda:0 중에 선택)
+# 엔비디아 GPU가 컴퓨터에 탑재되어 있고, 호환되는 드라이버가 설치되어 있는 경우 cuda:0 으로 선택
 DEVICE = "cpu"
-#DEVICE = "cuda:0"
+# DEVICE = "cuda:0"
 
-# Confidence score가 THRESHOLD 값을 넘었을때 마스킹 이미지에 표시하도록 설정
+# yolo 모델이 추론한 instance의 confidence score(0.0 ~ 1.0)가 THRESHOLD 값을 넘을 때만 마스킹 함.
 THRESHOLD = 0.5
 
-#----------------------------------------------
+
+QUE = 1
+
+#--------------------------------------------
 
 WHITE = [255, 255, 255]
 PINK = [136, 0, 237]
@@ -90,9 +87,7 @@ class SegmentationNode(Node):
         self.pub_info = self.create_publisher(DetectionArray, "detections", self.que)
         
         self._class_to_color = {}
-        
-        self.time_prev = time.time()
-        self.time_post = time.time()
+
             
     def parse_hypothesis(self, results: Results) -> List[Dict]:
         hypothesis_list = []
@@ -159,6 +154,9 @@ class SegmentationNode(Node):
         cv_image = self.cv_bridge.imgmsg_to_cv2(msg)
         
         results = self.yolo.predict(source=cv_image, verbose=False, stream=False, conf=self.threshold, device=self.device)
+        computation_time = results[0].speed['preprocess'] + results[0].speed['inference'] + results[0].speed['postprocess']
+        print('Computation time for this frame: ', format(round(computation_time/1000, 6),'.6f'), ' sec')
+
         results: Results = results[0].cpu()
         
         if results.boxes:
@@ -210,10 +208,6 @@ class SegmentationNode(Node):
                                      
         cv2.imshow('masked_img', masking_outer)
         cv2.waitKey(1)
-
-        self.time_prev = self.time_post
-        self.time_post = time.time()
-        print('computation time for this frame: ', self.time_post - self.time_prev)
 
         
 def main(args=None):
