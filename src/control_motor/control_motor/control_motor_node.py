@@ -22,20 +22,24 @@ QUE = 1
 # 아두이노 장치 명
 PORT='/dev/ttyACM0'
 
-# 가변저항과 연결된 아날로그 입력 핀
-VARIBLE_RESISTER_INPUT_PIN = 'A2'
+# 가변저항 입력 핀
+VARIBLE_RESISTOR_INPUT_PIN = 'A2'
 
-# 각 모터드라이버에 연결된 아두이노 핀
+# 조향모터에 연결된 핀
 STEERING_PIN1 = 10
 STEERING_PIN2 = 12
-LEFT_REAR_PIN1 = 6
-LEFT_REAR_PIN2 = 8
-RIGHT_REAR_PIN1 = 3
-RIGHT_REAR_PIN2 = 5
 
-# 가변저항 최대 좌측 & 최대 우측 측정 값
-resistance_most_left = 433
-resistance_most_right = 309
+# 좌측 뒷바퀴에 연결된 핀
+LEFT_REAR_PIN1 = 3
+LEFT_REAR_PIN2 = 5
+
+# 우측 뒷바퀴에 연결된 핀
+RIGHT_REAR_PIN1 = 6
+RIGHT_REAR_PIN2 = 8
+
+# 가변저항 최대 좌측값 & 최대 우측값
+VARIBLE_RESISTOR_MOST_LEFT = 461 
+VARIBLE_RESISTOR_MOST_RIGHT = 346
 
 #----------------------------------------------
 
@@ -45,15 +49,15 @@ time.sleep(1)
 class SendSignal():
   def __init__(self):
     CONTROL.arduino_pinsetting(ser,
-                        VARIBLE_RESISTER_INPUT_PIN,
+                        VARIBLE_RESISTOR_INPUT_PIN,
                         STEERING_PIN1,
                         STEERING_PIN2,
                         LEFT_REAR_PIN1,
                         LEFT_REAR_PIN2,
                         RIGHT_REAR_PIN1,
                         RIGHT_REAR_PIN2,
-                        resistance_most_left,
-                        resistance_most_right)    
+                        VARIBLE_RESISTOR_MOST_LEFT,
+                        VARIBLE_RESISTOR_MOST_RIGHT)    
     time.sleep(1)
 
   def process(self, protocol):
@@ -62,17 +66,15 @@ class SendSignal():
     return
 
 class MotorControlNode(Node):
-  def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic="topic_send_signal", timer=TIMER, que=QUE):
+  def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic="topic_send_signal", que=QUE):
     super().__init__('node_control_motor')
     
     self.declare_parameter('sub_topic', sub_topic)
     self.declare_parameter('pub_topic', pub_topic)
-    self.declare_parameter('timer', timer)
     self.declare_parameter('que', que)
     
     self.sub_topic = self.get_parameter('sub_topic').get_parameter_value().string_value
     self.pub_topic = self.get_parameter('pub_topic').get_parameter_value().string_value
-    self.timer_period = self.get_parameter('timer').get_parameter_value().double_value
     self.que = self.get_parameter('que').get_parameter_value().integer_value
 
     self.send_serial = SendSignal()

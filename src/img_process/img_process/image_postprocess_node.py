@@ -66,17 +66,15 @@ class PostProcess():
     return result_img
 
 class ImgPostProcessNode(Node):
-  def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic=PUB_TOPIC_NAME, timer=TIMER, que=QUE):
+  def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic=PUB_TOPIC_NAME, que=QUE):
     super().__init__('node_pub_postproc')
     
     self.declare_parameter('sub_topic', sub_topic)
     self.declare_parameter('pub_topic', pub_topic)
-    self.declare_parameter('timer', timer)
     self.declare_parameter('que', que)
     
     self.sub_topic = self.get_parameter('sub_topic').get_parameter_value().string_value
     self.pub_topic = self.get_parameter('pub_topic').get_parameter_value().string_value
-    self.timer_period = self.get_parameter('timer').get_parameter_value().double_value
     self.que = self.get_parameter('que').get_parameter_value().integer_value
 
     self.is_running = False
@@ -87,17 +85,12 @@ class ImgPostProcessNode(Node):
     self.subscription = self.create_subscription(Image, self.sub_topic, self.image_callback, image_qos_profile)
 
     self.publisher_ = self.create_publisher(Image, self.pub_topic , self.que)
-    self.timer = self.create_timer(self.timer_period, self.timer_callback)
-
+    
   def image_callback(self, data):
     self.is_running = True
     current_frame = self.br.imgmsg_to_cv2(data)
     processed_img = self.post.process(current_frame)
     self.publisher_.publish(self.br.cv2_to_imgmsg(processed_img))
-
-  def timer_callback(self):
-    if not self.is_running:
-      self.get_logger().info('Not published yet: "%s"' % self.sub_topic)
 
 def main(args=None):
     rclpy.init(args=args)

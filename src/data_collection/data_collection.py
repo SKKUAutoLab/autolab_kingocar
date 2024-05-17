@@ -38,23 +38,23 @@ PORT='/dev/ttyACM0'
 DATA_COLLECTION_PATH= os.path.dirname(real_path) + '/load_img/load_img/lib/Collected_Datasets' 
 
 # 가변저항 입력 핀
-VARIBLE_RESISTOR_INPUT_PIN = 'A1'
+VARIBLE_RESISTOR_INPUT_PIN = 'A2'
 
 # 조향모터에 연결된 핀
-STEERING_PIN1 = 7
-STEERING_PIN2 = 6
+STEERING_PIN1 = 10
+STEERING_PIN2 = 12
 
 # 좌측 뒷바퀴에 연결된 핀
-LEFT_REAR_PIN1 = 5 
-LEFT_REAR_PIN2 = 4
+LEFT_REAR_PIN1 = 3
+LEFT_REAR_PIN2 = 5
 
 # 우측 뒷바퀴에 연결된 핀
-RIGHT_REAR_PIN1 = 3
-RIGHT_REAR_PIN2 = 2
+RIGHT_REAR_PIN1 = 6
+RIGHT_REAR_PIN2 = 8
 
 # 가변저항 최대 좌측값 & 최대 우측값
-VARIBLE_RESISTOR_MOST_LEFT = 590 
-VARIBLE_RESISTOR_MOST_RIGHT = 478
+VARIBLE_RESISTOR_MOST_LEFT = 461 
+VARIBLE_RESISTOR_MOST_RIGHT = 346
 
 # ----------------------------------------------------
 

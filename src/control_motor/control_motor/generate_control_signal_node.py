@@ -115,17 +115,15 @@ class IntegrateInfo():
   
 
 class GenerateSignalNode(Node):
-  def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic=PUB_TOPIC_NAME, timer=TIMER, que=QUE):
+  def __init__(self, sub_topic=SUB_TOPIC_NAME, pub_topic=PUB_TOPIC_NAME, que=QUE):
     super().__init__('node_signal_generator')
     
     self.declare_parameter('sub_topic', sub_topic)
     self.declare_parameter('pub_topic', pub_topic)
-    self.declare_parameter('timer', timer)
     self.declare_parameter('que', que)
     
     self.sub_topic = self.get_parameter('sub_topic').get_parameter_value().string_value
     self.pub_topic = self.get_parameter('pub_topic').get_parameter_value().string_value
-    self.timer_period = self.get_parameter('timer').get_parameter_value().double_value
     self.que = self.get_parameter('que').get_parameter_value().integer_value
 
     self.is_running = False
